@@ -1,7 +1,6 @@
 const {DataTypes, Model} = require('sequelize');
 const sequelize = require('../../instance');
 const bcrypt = require('bcrypt');
-const { v4: uuidv4 } = require('uuid');
 
 class User extends Model {
 }
@@ -33,8 +32,6 @@ User.init({
     hooks: {
         beforeCreate: async (user) => {
             user.password = await bcrypt.hash(user.password, 10);
-            const apiKey = uuidv4();
-            user.apiKey = await bcrypt.hash(apiKey, 10);
         },
     },
     sequelize,
