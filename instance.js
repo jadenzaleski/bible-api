@@ -9,7 +9,7 @@ sequelize
     .then(() => console.log('Successfully connected to the database!'))
     .catch((error) => console.log('Failed to connect the database:', error))
 
-sequelize.sync().then(() => {
+sequelize.sync( { alter: true }).then(() => {
     console.log('Database & tables synced!');
 });
 
