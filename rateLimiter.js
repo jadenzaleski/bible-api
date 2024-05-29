@@ -1,10 +1,9 @@
 const setRateLimit = require("express-rate-limit");
+require('dotenv').config();
 
-
-const perMin = 3
 const rateLimitMiddleware = setRateLimit({
     windowMs: 60 * 1000,
-    limit: perMin,
+    limit: process.env.RATE_LIMIT_PER_MIN,
     message: {
         status: "429 Too Many Requests",
         timestamp: new Date().toISOString(),

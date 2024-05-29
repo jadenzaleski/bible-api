@@ -5,6 +5,7 @@ const { query, param} = require('express-validator');
 const bodyParser = require('body-parser');
 const path = require('path');
 require('dotenv').config();
+const fs = require('fs');
 
 const userRoutes = require('./api/routes/users');
 const VerseController = require("./api/controllers/verses");
@@ -12,7 +13,12 @@ const User = require("./api/models/user");
 const rateLimitMiddleware = require("./rateLimiter");
 
 
-app.use(morgan('dev'));
+// create a write stream (in append mode)
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'bible-api.log'), {flags: 'a'});
+
+// setup the logger
+app.use(morgan('combined', { stream: accessLogStream }));
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(rateLimitMiddleware);
@@ -22,8 +28,8 @@ app.use('/users', userRoutes);
 // Route for retrieving verses
 app.get('/:translation/:book', [
     // Add validation and sanitization middleware
-    param('translation').notEmpty().trim().escape(),
-    param('book').notEmpty().trim().escape(),
+    param('translation').trim().escape(),
+    param('book').trim().escape(),
     query('start').trim().escape(),
     query('end').trim().escape(),
     query('superscript').trim().escape(),

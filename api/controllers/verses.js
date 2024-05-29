@@ -144,8 +144,16 @@ exports.retrieve = async (req, res) => {
         let combinedText = "";
         for (const result of array) {
             let verseText = result.text;
-            if (superscript && superscript.toLowerCase() === "true") {
-                combinedText += " " + getSuperscript(result.verse) + " ";
+            switch (superscript && superscript.toLowerCase()) {
+                case "super":
+                    combinedText += " " + getSuperscript(result.verse) + " ";
+                    break;
+                case "plain":
+                    combinedText += ` ${result.verse} `;
+                    break;
+                case "html":
+                    combinedText += " <sup>" + result.verse + "</sup> ";
+                    break;
             }
             combinedText += verseText;
         }
