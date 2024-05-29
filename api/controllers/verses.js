@@ -11,9 +11,9 @@ const books = ["Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Josh
     "1 John", "2 John", "3 John", "Jude", "Revelation"]
 const chapterVersePattern = /^\d+:\d+$/;
 
-exports.retrieve = async (req, res, next) => {
+exports.retrieve = async (req, res) => {
     const {translation, book} = req.params;
-    const {start, end, apiKey} = req.query;
+    const {start, end, superscript, apiKey} = req.query;
     // Convert to lowercase for case-insensitive comparison
     const lowerCaseTranslation = translation.toLowerCase();
     const lowerCaseBook = book.toLowerCase();
@@ -21,7 +21,7 @@ exports.retrieve = async (req, res, next) => {
     // Convert the arrays to lowercase for comparison
     const lowerCaseTranslations = translations.map(t => t.toLowerCase());
     const lowerCaseBooks = books.map(b => b.toLowerCase());
-    console.log('Received parameters:', {translation, book, start, end, apiKey});
+    console.log('Received parameters:', {translation, book, start, end, superscript, apiKey});
 
     try {
         // Verify the translation and book
@@ -42,15 +42,21 @@ exports.retrieve = async (req, res, next) => {
         // Validate the start parameter
         if (!chapterVersePattern.test(start)) {
             return res.status(400).json({
-                message: "Invalid start parameter format. Expected format is 'chapter:verse'.",
+                message: "Start parameter not provided or invalid format. Expected format is 'chapter:verse'.",
                 start: start
             });
         }
 
-        // Validate the end parameter if provided
-        if (end && !chapterVersePattern.test(end)) {
+        if(!apiKey) {
             return res.status(400).json({
-                message: "Invalid end parameter format. Expected format is 'chapter:verse'.",
+                message: "API key is missing."
+            })
+        }
+
+        // Validate the end parameter if provided
+        if (!chapterVersePattern.test(end)) {
+            return res.status(400).json({
+                message: "End parameter not provided or invalid format. Expected format is 'chapter:verse'.",
                 end: end
             });
         }
@@ -69,29 +75,61 @@ exports.retrieve = async (req, res, next) => {
         }
 
 
-        // Validation done. now query
         // Extract start and end chapter and verse numbers
         const [startChapter, startVerse] = start.split(':').map(Number);
         const [endChapter, endVerse] = end.split(':').map(Number);
-        const query = `
-  SELECT *
-  FROM ${lowerCaseTranslation}
-  WHERE book = '${book}' AND (
-    (chapter = ${startChapter} AND verse >= ${startVerse})
-    OR (chapter > ${startChapter} AND chapter < ${endChapter})
-    OR (chapter = ${endChapter} AND verse <= ${endVerse})
-  )
-  ORDER BY chapter, verse;
-        `;
-        const [results, metadata] = await sequelize.query(query)
+
+        if(endVerse < startVerse || endChapter < startChapter) {
+            return res.status(400).json({
+                message: "End parameters can not be less than start parameters.",
+                start: start,
+                end: end
+            });
+        }
+        const array = [];
+        if (startChapter !== endChapter) {
+            for (let i = startChapter; i <= endChapter; i++) {
+                if (i === startChapter) {
+                    const query = `SELECT * FROM ${lowerCaseTranslation} WHERE lower(book) = '${lowerCaseBook}' AND chapter = ${i} AND verse >= ${startVerse}`;
+                    const [results] = await sequelize.query(query);
+                    array.push(...results);
+                } else if (i === endChapter) {
+                    const query = `SELECT * FROM ${lowerCaseTranslation} WHERE lower(book) = '${lowerCaseBook}' AND chapter = ${i} AND verse <= ${endVerse}`;
+                    const [results] = await sequelize.query(query);
+                    array.push(...results);
+                } else {
+                    const query = `SELECT * FROM ${lowerCaseTranslation} WHERE lower(book) = '${lowerCaseBook}' AND chapter = ${i}`;
+                    const [results] = await sequelize.query(query);
+                    array.push(...results);
+                }
+            }
+        } else {
+            const query = `SELECT * FROM ${lowerCaseTranslation} WHERE lower(book) = '${lowerCaseBook}' AND chapter = ${startChapter} AND verse >= ${startVerse} AND verse <= ${endVerse}`;
+            const [results] = await sequelize.query(query);
+            array.push(...results);
+        }
+
+        let combinedText = "";
+        for (const result of array) {
+            let verseText = result.text;
+            if (superscript && superscript.toLowerCase() === "true") {
+                combinedText += " " + getSuperscript(result.verse) + " ";
+            }
+            combinedText += verseText;
+        }
 
         return res.status(200).json({
-            result: results,
-            metadata: metadata
+            array: array,
+            result: combinedText
+
         })
     } catch (error) {
-        res.status(500).json({error: error});
+        res.status(500).json({error: error.message});
     }
 
+}
 
+function getSuperscript(number) {
+    const sup = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+    return number.toString().split("").map(digit => sup[digit]).join("");
 }
