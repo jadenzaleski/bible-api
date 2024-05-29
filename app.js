@@ -6,6 +6,8 @@ const path = require('path');
 require('dotenv').config();
 
 const userRoutes = require('./api/routes/users');
+const VerseController = require("./api/controllers/verses");
+const User = require("./api/models/user");
 
 
 app.use(morgan('dev'));
@@ -13,6 +15,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 app.use('/users', userRoutes);
+
+
+app.get('/:translation/:book', VerseController.retrieve);
 
 
 // Handle CORS errors with headers

@@ -133,8 +133,7 @@ exports.user_delete = async (req, res, next) => {
             await existingUser.destroy()
 
             return res.status(200).json({
-                message: "Authentication Successful. Deleted user.",
-                username: req.body.username,
+                message: "Authentication Successful. Deleted user" + req.body.username + "."
             });
         } else {
             return res.status(401).json({
