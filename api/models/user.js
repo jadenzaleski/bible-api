@@ -27,6 +27,10 @@ User.init({
     apiKeyCount: {
         type: DataTypes.INTEGER,
         defaultValue: 0
+    },
+    verseCallCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
 }, {
     hooks: {

@@ -14,66 +14,83 @@ const chapterVersePattern = /^\d+:\d+$/;
 exports.retrieve = async (req, res) => {
     const {translation, book} = req.params;
     const {start, end, superscript, apiKey} = req.query;
-    // Convert to lowercase for case-insensitive comparison
     const lowerCaseTranslation = translation.toLowerCase();
     const lowerCaseBook = book.toLowerCase();
-
-    // Convert the arrays to lowercase for comparison
     const lowerCaseTranslations = translations.map(t => t.toLowerCase());
     const lowerCaseBooks = books.map(b => b.toLowerCase());
     console.log('Received parameters:', {translation, book, start, end, superscript, apiKey});
 
     try {
-        // Verify the translation and book
+        // Verify the translation
         if (!lowerCaseTranslations.includes(lowerCaseTranslation)) {
             return res.status(400).json({
-                message: "Invalid translation provided.",
-                translation: translation
+                type: "GET",
+                status: "400 Bad Request",
+                timestamp: new Date().toISOString(),
+                message: `Invalid translation provided: ${translation}`,
+                available_translations: translations
             });
         }
-
+        // Verify the book
         if (!lowerCaseBooks.includes(lowerCaseBook)) {
             return res.status(400).json({
-                message: "Invalid book provided.",
-                book: book
+                type: "GET",
+                status: "400 Bad Request",
+                timestamp: new Date().toISOString(),
+                message: `Invalid book provided: ${book}`,
+                available_books: books
             });
         }
 
         // Validate the start parameter
         if (!chapterVersePattern.test(start)) {
             return res.status(400).json({
+                type: "GET",
+                status: "400 Bad Request",
+                timestamp: new Date().toISOString(),
                 message: "Start parameter not provided or invalid format. Expected format is 'chapter:verse'.",
                 start: start
             });
         }
 
-        if(!apiKey) {
-            return res.status(400).json({
-                message: "API key is missing."
-            })
-        }
-
-        // Validate the end parameter if provided
+        // Validate the end parameter
         if (!chapterVersePattern.test(end)) {
             return res.status(400).json({
+                type: "GET",
+                status: "400 Bad Request",
+                timestamp: new Date().toISOString(),
                 message: "End parameter not provided or invalid format. Expected format is 'chapter:verse'.",
                 end: end
             });
         }
 
+        // Validate the API Key is there
+        if(!apiKey) {
+            return res.status(400).json({
+                type: "GET",
+                status: "400 Bad Request",
+                timestamp: new Date().toISOString(),
+                message: "API key is missing."
+            })
+        }
+
+        // Find existing user if there is one
         const existingUser = await User.findOne({
             where: {
                 apikey: apiKey,
             }
         });
 
+        // If there is no use the api key is invalid.
         if (!existingUser) {
             return res.status(401).json({
-                message: "Invalid API Key.",
+                type: "GET",
+                status: "401 Unauthorized",
+                timestamp: new Date().toISOString(),
+                message: "Invalid API key.",
                 apikey: apiKey,
             })
         }
-
 
         // Extract start and end chapter and verse numbers
         const [startChapter, startVerse] = start.split(':').map(Number);
@@ -81,7 +98,10 @@ exports.retrieve = async (req, res) => {
 
         if(endVerse < startVerse || endChapter < startChapter) {
             return res.status(400).json({
-                message: "End parameters can not be less than start parameters.",
+                type: "GET",
+                status: "400 Bad Request",
+                timestamp: new Date().toISOString(),
+                message: "End parameters can not be less then start parameters.",
                 start: start,
                 end: end
             });
@@ -118,13 +138,36 @@ exports.retrieve = async (req, res) => {
             combinedText += verseText;
         }
 
-        return res.status(200).json({
-            array: array,
-            result: combinedText
+        existingUser.apiKeyCount += 1;
+        existingUser.verseCallCount += array.length
+        await existingUser.save();
 
+        // Proper response:
+        return res.status(200).json({
+            type: "GET",
+            status: "200 OK",
+            timestamp: new Date().toISOString(),
+            username: req.query.username,
+            parameters: {
+                translation: translation,
+                book: book,
+                start: start,
+                end: end,
+                superscript: superscript,
+                apiKey: apiKey
+            },
+            result: {
+                array: array,
+                combined: combinedText
+            }
         })
     } catch (error) {
-        res.status(500).json({error: error.message});
+        res.status(500).json({
+            type: "GET",
+            status: "500 Internal Server Error",
+            timestamp: new Date().toISOString(),
+            error: error.message
+        });
     }
 
 }
