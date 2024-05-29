@@ -16,7 +16,7 @@ exports.user_signup = async (req, res, next) => {
                 type: "POST",
                 status: "409 Conflict",
                 timestamp: new Date().toISOString(),
-                message: "The username " + req.body.username + " already exists.",
+                msg: "The username " + req.body.username + " already exists.",
             });
         }
 
@@ -30,7 +30,7 @@ exports.user_signup = async (req, res, next) => {
             type: "POST",
             status: "201 Created",
             timestamp: new Date().toISOString(),
-            message: "User created successfully.",
+            msg: "User created successfully.",
             user: {
                 _id: user._id,
                 username: user.username,
@@ -42,7 +42,7 @@ exports.user_signup = async (req, res, next) => {
             type: "POST",
             status: "500 Internal Server Error",
             timestamp: new Date().toISOString(),
-            message: "An error occurred while creating the user.",
+            msg: "An error occurred while creating the user.",
             error: err.message,
         });
     }
@@ -62,7 +62,7 @@ exports.user_login = async (req, res, next) => {
                 type: "POST",
                 status: "401 Unauthorized",
                 timestamp: new Date().toISOString(),
-                message: "Authentication failed.",
+                msg: "Authentication failed.",
             });
         }
 
@@ -72,7 +72,7 @@ exports.user_login = async (req, res, next) => {
                 type: "POST",
                 status: "200 OK",
                 timestamp: new Date().toISOString(),
-                message: "Authentication Successful.",
+                msg: "Authentication Successful.",
                 _id: existingUser._id,
                 username: existingUser.username,
                 apiKey: existingUser.apiKey
@@ -82,7 +82,7 @@ exports.user_login = async (req, res, next) => {
                 type: "POST",
                 status: "401 Unauthorized",
                 timestamp: new Date().toISOString(),
-                message: "Authentication failed.",
+                msg: "Authentication failed.",
             });
         }
     } catch (err) {
@@ -90,7 +90,7 @@ exports.user_login = async (req, res, next) => {
             type: "POST",
             status: "500 Internal Server Error",
             timestamp: new Date().toISOString(),
-            message: "Internal Server Error",
+            msg: "Internal Server Error",
             error: err.message,
         });
     }
@@ -109,7 +109,7 @@ exports.user_regenerate = async (req, res, next) => {
                 type: "PATCH",
                 status: "401 Unauthorized",
                 timestamp: new Date().toISOString(),
-                message: "Authentication failed.",
+                msg: "Authentication failed.",
             });
         }
 
@@ -123,7 +123,7 @@ exports.user_regenerate = async (req, res, next) => {
                 type: "PATCH",
                 status: "200 OK",
                 timestamp: new Date().toISOString(),
-                message: "Authentication Successful. API Key Regenerated.",
+                msg: "Authentication Successful. API Key Regenerated.",
                 _id: existingUser._id,
                 username: existingUser.username,
                 apiKey: existingUser.apiKey
@@ -133,7 +133,7 @@ exports.user_regenerate = async (req, res, next) => {
                 type: "PATCH",
                 status: "401 Unauthorized",
                 timestamp: new Date().toISOString(),
-                message: "Authentication failed.",
+                msg: "Authentication failed.",
             });
         }
     } catch (err) {
@@ -141,7 +141,7 @@ exports.user_regenerate = async (req, res, next) => {
             type: "PATCH",
             status: "500 Internal Server Error",
             timestamp: new Date().toISOString(),
-            message: "Internal Server Error",
+            msg: "Internal Server Error",
             error: err.message,
         });
     }
@@ -160,7 +160,7 @@ exports.user_delete = async (req, res, next) => {
                 type: "DELETE",
                 status: "401 Unauthorized",
                 timestamp: new Date().toISOString(),
-                message: "Authentication failed.",
+                msg: "Authentication failed.",
             });
         }
 
@@ -172,14 +172,14 @@ exports.user_delete = async (req, res, next) => {
                 type: "DELETE",
                 status: "200 OK",
                 timestamp: new Date().toISOString(),
-                message: "Authentication Successful. Deleted user" + req.body.username + "."
+                msg: "Authentication Successful. Deleted user" + req.body.username + "."
             });
         } else {
             return res.status(401).json({
                 type: "DELETE",
                 status: "401 Unauthorized",
                 timestamp: new Date().toISOString(),
-                message: "Authentication failed.",
+                msg: "Authentication failed.",
             });
         }
     } catch (err) {
@@ -187,7 +187,7 @@ exports.user_delete = async (req, res, next) => {
             type: "DELETE",
             status: "500 Internal Server Error",
             timestamp: new Date().toISOString(),
-            message: "Internal Server Error",
+            msg: "Internal Server Error",
             error: err.message,
         });
     }

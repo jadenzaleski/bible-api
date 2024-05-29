@@ -9,12 +9,13 @@ require('dotenv').config();
 const userRoutes = require('./api/routes/users');
 const VerseController = require("./api/controllers/verses");
 const User = require("./api/models/user");
+const rateLimitMiddleware = require("./rateLimiter");
 
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-
+app.use(rateLimitMiddleware);
 app.use('/users', userRoutes);
 
 

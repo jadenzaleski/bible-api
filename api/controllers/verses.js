@@ -39,7 +39,7 @@ exports.retrieve = async (req, res) => {
                 type: "GET",
                 status: "400 Bad Request",
                 timestamp: new Date().toISOString(),
-                message: `Invalid translation provided: ${translation}`,
+                msg: `Invalid translation provided: ${translation}`,
                 available_translations: translations
             });
         }
@@ -49,7 +49,7 @@ exports.retrieve = async (req, res) => {
                 type: "GET",
                 status: "400 Bad Request",
                 timestamp: new Date().toISOString(),
-                message: `Invalid book provided: ${book}`,
+                msg: `Invalid book provided: ${book}`,
                 available_books: books
             });
         }
@@ -60,7 +60,7 @@ exports.retrieve = async (req, res) => {
                 type: "GET",
                 status: "400 Bad Request",
                 timestamp: new Date().toISOString(),
-                message: "Start parameter not provided or invalid format. Expected format is 'chapter:verse'.",
+                msg: "Start parameter not provided or invalid format. Expected format is 'chapter:verse'.",
                 start: start
             });
         }
@@ -71,7 +71,7 @@ exports.retrieve = async (req, res) => {
                 type: "GET",
                 status: "400 Bad Request",
                 timestamp: new Date().toISOString(),
-                message: "End parameter not provided or invalid format. Expected format is 'chapter:verse'.",
+                msg: "End parameter not provided or invalid format. Expected format is 'chapter:verse'.",
                 end: end
             });
         }
@@ -82,7 +82,7 @@ exports.retrieve = async (req, res) => {
                 type: "GET",
                 status: "400 Bad Request",
                 timestamp: new Date().toISOString(),
-                message: "API key is missing."
+                msg: "API key is missing."
             })
         }
 
@@ -99,7 +99,7 @@ exports.retrieve = async (req, res) => {
                 type: "GET",
                 status: "401 Unauthorized",
                 timestamp: new Date().toISOString(),
-                message: "Invalid API key.",
+                msg: "Invalid API key.",
                 apikey: apiKey,
             })
         }
@@ -113,7 +113,7 @@ exports.retrieve = async (req, res) => {
                 type: "GET",
                 status: "400 Bad Request",
                 timestamp: new Date().toISOString(),
-                message: "End parameters can not be less then start parameters.",
+                msg: "End parameters can not be less then start parameters.",
                 start: start,
                 end: end
             });
