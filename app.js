@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const { query, param} = require('express-validator');
 const bodyParser = require('body-parser');
 const path = require('path');
 require('dotenv').config();
@@ -17,7 +18,16 @@ app.use(bodyParser.json());
 app.use('/users', userRoutes);
 
 
-app.get('/:translation/:book', VerseController.retrieve);
+// Route for retrieving verses
+app.get('/:translation/:book', [
+    // Add validation and sanitization middleware
+    param('translation').notEmpty().trim().escape(),
+    param('book').notEmpty().trim().escape(),
+    query('start').trim().escape(),
+    query('end').trim().escape(),
+    query('superscript').trim().escape(),
+    query('apiKey').trim().escape()
+], VerseController.retrieve);
 
 
 // Handle CORS errors with headers

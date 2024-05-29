@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const { validationResult } = require('express-validator');
 const sequelize = require('../../instance');
 const translations = ["akjv", "asv", "brg", "ehv", "esv", "esvuk", "gnv", "gw", "isv", "jub", "kj21", "kjv", "leb", "mev", "nasb", "nasb1995", "niv", "nivuk", "nkjv", "nlt", "nlv", "nog", "nrsv", "nrsvue", "web", "ylt",]
 const books = ["Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges", "Ruth", "1 Samuel",
@@ -12,6 +13,17 @@ const books = ["Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Josh
 const chapterVersePattern = /^\d+:\d+$/;
 
 exports.retrieve = async (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            type: "GET",
+            status: "400 Bad Request",
+            timestamp: new Date().toISOString(),
+            errors: errors.array()
+        });
+    }
+
     const {translation, book} = req.params;
     const {start, end, superscript, apiKey} = req.query;
     const lowerCaseTranslation = translation.toLowerCase();
