@@ -4,10 +4,10 @@ servers:
     url: http://localhost:3001
 info:
   x-logo:
-    url: "bible-api-logo.png"
+    url: "http://localhost:3001/logo"
     backgroundColor: "#FFFFFF"
     altText: "bible-api logo"
-  description: A simple REST API to deliver the Bible in JSON format with support for several translations. The bible-api repository can be found [here](https://github.com/jadenzaleski/bible-api.git).
+  description: This API is a simple REST API designed to provide access to the Bible in JSON format, supporting multiple translations. This API allows users to create accounts, authenticate, regenerate API keys, and retrieve specific Bible verses. The source code for the API is available on [GitHub]((https://github.com/jadenzaleski/bible-api.git)).
   version: 1.0.0
   contact:
     email: jadenzaleski@icloud.com
@@ -16,7 +16,6 @@ info:
   license:
     name: MIT License
     url: https://github.com/jadenzaleski/bible-api/blob/77bc51408d0de40a4c4fe10fca4be03fe49d14b1/LICENSE
-
   title: bible-api
 tags:
   - name: Users

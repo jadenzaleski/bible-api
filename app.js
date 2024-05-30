@@ -8,7 +8,7 @@ require('dotenv').config();
 const fs = require('fs');
 const userRoutes = require('./api/routes/users');
 const VerseController = require("./api/controllers/verses");
-const User = require("./api/models/user");
+require("./api/models/user");
 const rateLimitMiddleware = require("./rateLimiter");
 // create a write stream (in append mode)
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'bible-api.log'), {flags: 'a'});
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use('/favicon.ico', express.static('bible-api-icon.ico'));
+app.use('/favicon.ico', express.static('images/bible-api-icon.ico'));
 
 app.use(morgan('combined', { stream: accessLogStream }));
 
@@ -35,10 +35,14 @@ app.use(rateLimitMiddleware);
 app.use('/users', userRoutes);
 
 app.get('/docs', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'htmldocs.html'));
+    res.sendFile(path.join(__dirname, 'public', 'docs.html'));
 });
 app.get('/docs/main.yaml', (req, res) => {
     res.sendFile(path.join(__dirname, 'docs', 'main.yaml'));
+});
+
+app.get('/logo', (req, res) => {
+    res.sendFile(path.join(__dirname, 'images', 'bible-api-logo.png'));
 });
 
 // Route for retrieving verses

@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
-    "docs": "npx @redocly/cli build-docs docs/main.yaml --config=docs/config.yaml --output=public/docs.html"
+    "dev": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -31,14 +30,11 @@
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "express-jsdoc-swagger": "^1.8.0",
     "express-rate-limit": "^7.2.0",
-    "express-sitemap-html": "^1.2.6",
     "express-validator": "^7.1.0",
     "morgan": "^1.10.0",
     "mysql2": "^3.9.8",
     "sequelize": "^6.37.3",
-    "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.1"
   }
 }
