@@ -1,0 +1,564 @@
+openapi: 3.0.0
+servers:
+  - description: bible-api
+    url: http://localhost:3001
+info:
+  x-logo:
+    url: "https://redocly.github.io/redoc/petstore-logo.png"
+    backgroundColor: "#FFFFFF"
+    altText: "Petstore logo"
+  description: A simple REST API to deliver the Bible in JSON format with support for several translations.
+  version: 1.0.0
+  contact:
+    email: jadenzaleski@icloud.com
+    name: Jaden Zaleski
+    url: https://jadenzaleski.com
+  license:
+    name: MIT License
+    url: https://github.com/jadenzaleski/bible-api/blob/77bc51408d0de40a4c4fe10fca4be03fe49d14b1/LICENSE
+  title: bible-api
+tags:
+  - name: Users
+    description: Calls related to the users account.
+  - name: Bible
+    description: Calls for retrieving the Bible.
+paths:
+  /users/signup:
+    post:
+      tags:
+        - Users
+      summary: Create user
+      description: Creates a new user with a unique username.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username for the new user
+                password:
+                  type: string
+                  description: The password for the new user
+              required:
+                - username
+                - password
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: POST
+                  status:
+                    type: string
+                    example: 201 Created
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: User created successfully.
+                  user:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        description: The unique identifier of the user
+                      username:
+                        type: string
+                        description: The username of the user
+                      apiKey:
+                        type: string
+                        description: The API key generated for the user
+        '409':
+          description: Username already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: POST
+                  status:
+                    type: string
+                    example: 409 Conflict
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: The username already exists.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: POST
+                  status:
+                    type: string
+                    example: 500 Internal Server Error
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: An error occurred while creating the user.
+                  error:
+                    type: string
+                    example: Description of the error
+
+  /users/login:
+    post:
+      tags:
+        - Users
+      summary: User login
+      description: Authenticates a user and returns user details if successful.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the user
+                password:
+                  type: string
+                  description: The password of the user
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: POST
+                  status:
+                    type: string
+                    example: 200 OK
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: Authentication Successful.
+                  _id:
+                    type: string
+                    description: The unique identifier of the user
+                  username:
+                    type: string
+                    description: The username of the user
+                  apiKey:
+                    type: string
+                    description: The current API key for the user
+        401:
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: POST
+                  status:
+                    type: string
+                    example: 401 Unauthorized
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: Authentication failed.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: POST
+                  status:
+                    type: string
+                    example: 500 Internal Server Error
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: Internal Server Error
+                  error:
+                    type: string
+                    example: Description of the error
+
+  /user/regenerate:
+    patch:
+      tags:
+        - Users
+      summary: Regenerate API key
+      description: Authenticates a user and regenerates their API key if successful.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the user
+                password:
+                  type: string
+                  description: The password of the user
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Authentication successful and API key regenerated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: PATCH
+                  status:
+                    type: string
+                    example: 200 OK
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: Authentication Successful. API Key Regenerated.
+                  _id:
+                    type: string
+                    description: The unique identifier of the user
+                  username:
+                    type: string
+                    description: The username of the user
+                  apiKey:
+                    type: string
+                    description: The new API key generated for the user
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: PATCH
+                  status:
+                    type: string
+                    example: 401 Unauthorized
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: Authentication failed.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: PATCH
+                  status:
+                    type: string
+                    example: 500 Internal Server Error
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: Internal Server Error
+                  error:
+                    type: string
+                    example: Description of the error
+
+  /users/delete:
+    delete:
+      tags:
+        - Users
+      summary: Delete a user
+      description: Authenticates a user and deletes their account if successful.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the user
+                password:
+                  type: string
+                  description: The password of the user
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Authentication successful and user deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: DELETE
+                  status:
+                    type: string
+                    example: 200 OK
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: Authentication Successful. Deleted user johnSmith.
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: DELETE
+                  status:
+                    type: string
+                    example: 401 Unauthorized
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: Authentication failed.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: DELETE
+                  status:
+                    type: string
+                    example: 500 Internal Server Error
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                    example: Internal Server Error
+                  error:
+                    type: string
+                    example: Description of the error
+
+  /{translation}/{book}:
+    get:
+      tags:
+        - Bible
+      summary: Retrieve verse(s) from the Bible
+      description: Retrieves Bible verses based on the specified translation, book, chapter, and verse range.
+      parameters:
+        - in: path
+          name: translation
+          required: true
+          schema:
+            type: string
+          description: The translation of the Bible (e.g., "NIV", "KJV").
+        - in: path
+          name: book
+          required: true
+          schema:
+            type: string
+          description: The book of the Bible (e.g., "Genesis", "John").
+        - in: query
+          name: start
+          required: true
+          schema:
+            type: string
+          description: The starting chapter and verse in the format 'chapter:verse'.
+        - in: query
+          name: end
+          required: true
+          schema:
+            type: string
+          description: The ending chapter and verse in the format 'chapter:verse'.
+        - in: query
+          name: superscript
+          required: false
+          schema:
+            type: string
+          description: 'The format for verse numbers in the result. Can be: "plain", "super", or "html". Any other value will result in no verse numbers.'
+        - in: query
+          name: apiKey
+          required: true
+          schema:
+            type: string
+          description: The API key for user authentication.
+      responses:
+        '200':
+          description: Successfully retrieved verses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: GET
+                  status:
+                    type: string
+                    example: 200 OK
+                  timestamp:
+                    type: string
+                    format: date-time
+                  username:
+                    type: string
+                  parameters:
+                    type: object
+                    properties:
+                      translation:
+                        type: string
+                      book:
+                        type: string
+                      start:
+                        type: string
+                      end:
+                        type: string
+                      superscript:
+                        type: string
+                      apiKey:
+                        type: string
+                  result:
+                    type: object
+                    properties:
+                      array:
+                        type: array
+                        items:
+                          type: object
+                      combined:
+                        type: string
+        '400':
+          description: Bad request due to validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: GET
+                  status:
+                    type: string
+                    example: 400 Bad Request
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+        '401':
+          description: Unauthorized due to invalid API key or authentication failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: GET
+                  status:
+                    type: string
+                    example: 401 Unauthorized
+                  timestamp:
+                    type: string
+                    format: date-time
+                  msg:
+                    type: string
+                  apiKey:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: GET
+                  status:
+                    type: string
+                    example: 500 Internal Server Error
+                  timestamp:
+                    type: string
+                    format: date-time
+                  error:
+                    type: string
+
+
+components:
+  schemas:
+    User:
+      required:
+        - username
+        - password
+      properties:
+        _id:
+          type: string
+          format: UUID
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        username:
+          type: string
+          example: johnSmith
+        password:
+          type: string
+          description: Encrypted.
+        apiKey:
+          type: string
+          format: UUID
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        apiKeyCount:
+          type: integer
+          default: 0
+          description: Amount of types the user has called any apiKey.
+        verseCallCount:
+          type: integer
+          default: 0
+          description: Total amount of verses called by user.

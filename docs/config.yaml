@@ -1,0 +1,14 @@
+theme:
+  typography:
+    fontFamily: Arial, sans-serif
+    headings:
+      fontFamily: Georgia, serif
+    code:
+      fontFamily: Courier, monospace
+      fontSize: 84px
+  colors:
+    primary:
+      main: '#dd5522'
+    text:
+      primary: '#333333'
+      secondary: '#555555'

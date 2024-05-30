@@ -7,7 +7,7 @@ const rateLimitMiddleware = setRateLimit({
     message: {
         status: "429 Too Many Requests",
         timestamp: new Date().toISOString(),
-        msg: `You have exceeded the limit of ${perMin} requests per minute.`
+        msg: `You have exceeded the limit of ${process.env.RATE_LIMIT_PER_MIN} requests per minute.`
     },
     headers: true,
 });

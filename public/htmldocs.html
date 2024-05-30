@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Documentation</title>
+    <!-- needed for adaptive design -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <!--
+    Redoc doesn't change outer page styles
+    -->
+    <style>
+        * {
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        code {
+            font-family: "Source Code Pro", monospace;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        button {
+            font-size: 14px;
+        }
+
+        button > span {
+            font-size: 14px;
+        }
+
+
+    </style>
+</head>
+<body>
+<redoc spec-url='../docs/main.yaml' path-in-middle-panel=true required-props-first=true theme='{
+        "spacing": {
+            "unit": "5",
+            "sectionVertical": 20
+        },
+        "typography": {
+            "fontSize": "16px",
+            "code": {
+                "fontSize": "14px"
+            },
+            "headings": {
+                "fontWeight": 600
+            },
+            "optimizeSpeed": false
+
+        }
+    }'
+>
+</redoc>
+<script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"> </script>
+</body>
+</html>
