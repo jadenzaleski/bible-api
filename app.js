@@ -25,6 +25,8 @@ app.use((req, res, next) => {
     next();
 })
 
+app.use('/favicon.ico', express.static('bible-api-icon.ico'));
+
 app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(bodyParser.urlencoded({extended: false}));
