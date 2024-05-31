@@ -1,11 +1,11 @@
 openapi: 3.0.0
 servers:
   - description: bible-api
-    url: http://localhost:3001
+    url: https://api.jadenzaleski.com/bible
 info:
   x-logo:
-    url: "http://localhost:3001/logo"
-    backgroundColor: "#FFFFFF"
+    url: "https://api.jadenzaleski.com/bible/logo"
+    backgroundColor: "#00FFFFFF"
     altText: "bible-api logo"
   description: This API is a simple REST API designed to provide access to the Bible in JSON format, supporting multiple translations. This API allows users to create accounts, authenticate, regenerate API keys, and retrieve specific Bible verses. The source code for the API is available on [GitHub]((https://github.com/jadenzaleski/bible-api.git)).
   version: 1.0.0
