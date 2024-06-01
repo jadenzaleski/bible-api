@@ -5,7 +5,7 @@ servers:
 info:
   x-logo:
     url: "https://api.jadenzaleski.com/bible/logo"
-    backgroundColor: "#00FFFFFF"
+    backgroundColor: "#FAFAFA"
     altText: "bible-api logo"
   description: This API is a simple REST API designed to provide access to the Bible in JSON format, supporting multiple translations. This API allows users to create accounts, authenticate, regenerate API keys, and retrieve specific Bible verses. The source code for the API is available on [GitHub]((https://github.com/jadenzaleski/bible-api.git)).
   version: 1.0.0
